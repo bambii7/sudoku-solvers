@@ -15,7 +15,6 @@ end
 
 def solve(puzzle)
   i = puzzle.index('0')
-  # puts "abc #{i} #{i.nil?}"
   if i.nil?
     puts puzzle
     exit
@@ -23,16 +22,12 @@ def solve(puzzle)
 
   exclude = Set[]
   (0..80).to_a.each do |j|
-    # puts "same row #{same_row(i, j)}"
-    # puts "same col #{same_col(i, j)}"
     if same_row(i, j) || same_col(i, j) || same_block(i, j)
       exclude.add(puzzle[j])
-      # puts exclude
     end
   end
 
   '123456789'.split('').each do |m|
-    # puts puzzle[0...i] + m + puzzle[i + 1..-1] unless exclude.include?(m)
     solve(puzzle[0...i] + m + puzzle[i + 1..-1]) unless exclude.include?(m)
   end
 end

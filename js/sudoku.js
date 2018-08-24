@@ -1,6 +1,7 @@
+#!/usr/bin/env node
 
 const sameRow = (i, j) => {
-  return (i / 9 == j / 9);
+  return parseInt(i / 9) == parseInt(j / 9);
 }
 
 const sameCol = (i, j) => {
@@ -8,42 +9,40 @@ const sameCol = (i, j) => {
 }
 
 const sameBlock = (i, j) => {
-  return (i / 27 == j / 27 && i % 9 / 3 == j % 9 / 3);
+  return (parseInt(i / 27) == parseInt(j / 27) && parseInt(i % 9 / 3) == parseInt(j % 9 / 3));
 }
 
-const solve = (puzzle) => {
-  const i = puzzle[0];
-}
+function solve(puzzle) {
+  const i = puzzle.indexOf('0')
+  if (i === -1) {
+    console.log(puzzle);
+    process.exit();
+  }
 
-def solve(puzzle)
-  i = puzzle.index('0')
-  # puts "abc #{i} #{i.nil?}"
-  if i.nil?
-    puts puzzle
-    exit
-  end
-
-  exclude = Set[]
-  (0..80).to_a.each do |j|
-    # puts "same row #{same_row(i, j)}"
-    # puts "same col #{same_col(i, j)}"
-    if same_row(i, j) || same_col(i, j) || same_block(i, j)
+  const exclude = new Set();
+  const range = [ ...Array(81).keys() ];
+  range.forEach((j) => {
+    // console.log((sameBlock(i, j)))
+    // console.log(i, j)
+    if (sameRow(i, j) || sameCol(i, j) || sameBlock(i, j)) {
       exclude.add(puzzle[j])
-      # puts exclude
-    end
-  end
+    }
+  });
+  // console.log('exclude', exclude)
+  '123456789'.split('').forEach((p) => {
+    if (!exclude.has(p)) {
+      const newSample = puzzle.slice(0, i) + p + puzzle.slice(i + 1, puzzle.length)
+      // console.log(newSample)
+      return solve(newSample)
+    }
+  });
+  return puzzle;
+}
 
-  '123456789'.split('').each do |m|
-    # puts puzzle[0...i] + m + puzzle[i + 1..-1] unless exclude.include?(m)
-    solve(puzzle[0...i] + m + puzzle[i + 1..-1]) unless exclude.include?(m)
-  end
-end
-
-if ARGV.length == 1 && ARGV[0].length == 81
-  puzzle = ARGV[0]
-  solve(puzzle)
-else
-  puts 'Usage: python sudoku.py puzzle'
-  puts 'where puzzle is an 81 character string representing the puzzle read
-        left-to-right, top-to-bottom, and 0 is a blank'
-end
+const arg = process.argv[2]
+if (arg) {
+  console.log("Solving ", arg);
+  const solution = solve(arg);
+} else {
+  console.log('put a sudoku puzzle in single line format as an argument');
+}
